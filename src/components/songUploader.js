@@ -113,11 +113,7 @@ export default function UploadSong() {
       .catch((error) => {
         setIsLoading(false);
         console.log(error);
-        setErr(
-          error.response.data
-            ? error.response.data.error.message
-            : error.message
-        );
+        setErr(error);
       });
   };
 
@@ -199,7 +195,7 @@ export default function UploadSong() {
                   minRows={4}
                   onChange={(e) => setLrc(e.target.value)}
                 />
-                {err && <Alert severity="error">{err}</Alert>}
+                {err && <Alert severity="error">{err.message}</Alert>}
                 {success && <Alert severity="success">Success</Alert>}
                 <FormLabel htmlFor="choosesong">Choose song</FormLabel>
                 <input

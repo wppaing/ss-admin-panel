@@ -108,11 +108,7 @@ export default function CreateAlbum() {
       .catch((error) => {
         setIsLoading(false);
         console.log(error);
-        setErr(
-          error.response.data
-            ? error.response.data.error.message
-            : error.message
-        );
+        setErr(error);
       });
   };
 
@@ -196,7 +192,7 @@ export default function CreateAlbum() {
                   minRows={4}
                   onChange={(e) => setDesc(e.target.value)}
                 />
-                {err && <Alert severity="error">{err}</Alert>}
+                {err && <Alert severity="error">{err.message}</Alert>}
                 {success && <Alert severity="success">Success</Alert>}
                 <FormLabel htmlFor="chooseimage">Choose image</FormLabel>
                 <input

@@ -3,8 +3,11 @@ import qs from "qs";
 import {
   Box,
   Button,
+  CircularProgress,
   Container,
   FormControl,
+  IconButton,
+  InputAdornment,
   TextField,
   Typography,
 } from "@mui/material";
@@ -14,11 +17,14 @@ import { Routes, Route } from "react-router-dom";
 import ArtistUploader from "./components/artistUploader";
 import CreateAlbum from "./components/createAlbum";
 import SongUploader from "./components/songUploader";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 function App() {
   const [token, setToken] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [showpw, setShowpw] = useState(false);
 
   useEffect(() => {
     setToken(localStorage.getItem("token"));
@@ -26,6 +32,7 @@ function App() {
 
   const loginHandler = async (e) => {
     e.preventDefault();
+    setLoading(true);
     const config = {
       method: "post",
       url: "https://api-streamservice-ss.herokuapp.com/login",
@@ -36,11 +43,13 @@ function App() {
     };
     await axios(config)
       .then((response) => {
+        setLoading(false);
         const token = response.data.token;
         localStorage.setItem("token", token);
-        // setToken(token);
+        setToken(token);
       })
       .catch((error) => {
+        setLoading(false);
         console.log(error);
         alert("Error occurred");
       });
@@ -72,28 +81,55 @@ function App() {
                   <Box sx={{ marginBottom: "2rem" }}>
                     <Typography variant="h3">Log in to your account</Typography>
                   </Box>
-                  <FormControl fullWidth>
-                    <TextField
-                      label="Email"
-                      size="medium"
-                      margin="normal"
-                      onChange={(e) => setEmail(e.target.value)}
-                    />
-                    <TextField
-                      type="password"
-                      label="Password"
-                      margin="normal"
-                      sx={{ marginBottom: 2 }}
-                      onChange={(e) => setPassword(e.target.value)}
-                    />
-                    <Button
-                      onClick={loginHandler}
-                      variant="contained"
-                      type="submit"
-                    >
-                      Login
-                    </Button>
-                  </FormControl>
+                  <form style={{ width: "100%" }}>
+                    <FormControl fullWidth variant="outlined">
+                      <TextField
+                        type="email"
+                        required
+                        label="Email"
+                        margin="normal"
+                        onChange={(e) => setEmail(e.target.value)}
+                      />
+                      <TextField
+                        required
+                        type={showpw ? "text" : "password"}
+                        label="Password"
+                        margin="normal"
+                        sx={{ marginBottom: 2 }}
+                        onChange={(e) => setPassword(e.target.value)}
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <IconButton
+                                edge="end"
+                                onClick={() => setShowpw(!showpw)}
+                              >
+                                {showpw ? <VisibilityOff /> : <Visibility />}
+                              </IconButton>
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                      <Button
+                        onClick={loginHandler}
+                        variant="contained"
+                        type="submit"
+                        disabled={loading}
+                      >
+                        {loading ? (
+                          <>
+                            Logging in
+                            <CircularProgress
+                              color="inherit"
+                              size="1rem"
+                            />{" "}
+                          </>
+                        ) : (
+                          "Login"
+                        )}
+                      </Button>
+                    </FormControl>
+                  </form>
                 </>
               )}
             </Container>
