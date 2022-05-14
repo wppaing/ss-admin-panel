@@ -101,6 +101,7 @@ export default function UploadSong() {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
         "Content-Type": "multipart/form-data",
+        "Access-Control-Allow-Origin": "*",
       },
       data: data,
     };

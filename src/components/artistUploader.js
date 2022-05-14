@@ -48,6 +48,7 @@ export default function ArtistUploader() {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
         "Content-Type": "multipart/form-data",
+        "Access-Control-Allow-Origin": "*",
       },
       data: data,
     };
